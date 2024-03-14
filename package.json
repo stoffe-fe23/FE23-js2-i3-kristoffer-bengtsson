@@ -1,0 +1,20 @@
+{
+  "name": "fe23-js2-i3-kristoffer-bengtsson",
+  "version": "1.0.0",
+  "description": "Inlämningsuppgift 3 - Dummy Webshop",
+  "type": "module",
+  "scripts": {
+    "dev": "parcel serve ./src/index.html --dist-dir ./dist",
+    "clean": "del-cli ./.parcel-cache ./dist",
+    "prebuild": "del-cli ./.parcel-cache ./docs ./dist",
+    "build": "parcel build ./src/index.html --dist-dir ./docs --public-url ./"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "del-cli": "^5.1.0",
+    "parcel": "^2.11.0"
+  },
+  "dependencies": {}
+}
