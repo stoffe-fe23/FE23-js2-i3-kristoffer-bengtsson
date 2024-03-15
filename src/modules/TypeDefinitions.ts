@@ -2,7 +2,7 @@
     Dummy Webshop - Inlämningsuppgift 3 - Javascript 2 - FE23
     By Kristoffer Bengtsson
 
-    Type Definitions.js
+    TypeDefinitions.js
     Type aliases.
 */
 
@@ -34,3 +34,10 @@ export type APIQueryParams = Record<string, string | Array<string>> | null;
 // Structure of data passed to the API functions when doing a non-GET request
 export type APIQueryValue = string | number | boolean | Array<string | number>;
 export type APIQueryData = FormData | Record<string, APIQueryValue> | null;
+
+// Structure for tracking info about the last API query performed
+export type APILastRequest = {
+    url: URL | null,
+    method: 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'None',
+    options: RequestInit | undefined
+}

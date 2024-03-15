@@ -140,7 +140,6 @@ export function createHTMLElement(elementType: string, elementText: string | str
             else {
                 newElement.append(newElementLabel, actualNewElement);
             }
-
         }
         else {
             newElement[allowHTML ? "innerHTML" : "innerText"] = elementText as string;
@@ -167,6 +166,14 @@ export function addClassToElement(targetElement: HTMLElement, classesToAdd: stri
             }
         }
     }
+}
+
+
+export function addSelectOption(selectElement: HTMLSelectElement, value: string, text: string | null = null): void {
+    const option = document.createElement("option");
+    option.value = value;
+    option.innerText = (text ?? value.replace("-", " "));
+    selectElement.appendChild(option);
 }
 
 

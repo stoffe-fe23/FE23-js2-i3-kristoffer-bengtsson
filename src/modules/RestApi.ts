@@ -5,18 +5,24 @@
     RestApi.js
     Class for making requests to a REST API using JSON data. 
 */
-import { APIQueryParams, APIQueryValue, APIQueryData } from './TypeDefinitions.ts';
+import { APIQueryParams, APIQueryValue, APIQueryData, APILastRequest } from './TypeDefinitions.ts';
 
 
 export default class RestApi {
     private readonly urlBase: string;
     private readonly urlSuffix: string;
+    private lastRequest: APILastRequest;
 
     // Set the base URL to access the api, and any default suffix (like ".json" on Firebase)
     // Each individual request method can then extend on the base url, and add query parameters. 
     constructor(baseUrl: string, urlSuffix: string = "") {
         this.urlBase = baseUrl;
         this.urlSuffix = urlSuffix;
+        this.lastRequest = {
+            url: null,
+            method: "None",
+            options: undefined
+        };
     }
 
 
@@ -28,6 +34,8 @@ export default class RestApi {
         if (!response.ok) {
             this.handleResponseErrors(response, result);
         }
+        this.lastRequest.method = 'GET';
+        this.lastRequest.options = undefined;
         return result as Type;
     }
 
@@ -40,6 +48,7 @@ export default class RestApi {
         if (!response.ok) {
             this.handleResponseErrors(response, result);
         }
+        this.lastRequest.method = 'POST';
         return result as Type;
     }
 
@@ -52,6 +61,7 @@ export default class RestApi {
         if (!response.ok) {
             this.handleResponseErrors(response, result);
         }
+        this.lastRequest.method = 'PATCH';
         return result as Type;
     }
 
@@ -61,6 +71,20 @@ export default class RestApi {
     async deleteJson<Type>(urlPath: string = '', formData: APIQueryData = null, queryParams: APIQueryParams = null): Promise<Type> {
         let response = await fetch(this.buildRequestUrl(urlPath, queryParams), this.getFetchOptions("DELETE", formData ?? {}));
         let result = await response.json();
+        if (!response.ok) {
+            this.handleResponseErrors(response, result);
+        }
+        this.lastRequest.method = 'DELETE';
+        return result as Type;
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Repeat latest request, with optional modifications.
+    // If urlPath or queryParams is set they will override that existing value of the last request. 
+    async repeatRequestJson<Type>(urlPath: string = '', queryParams: APIQueryParams = null): Promise<Type> {
+        const response = await fetch(this.rebuildRequestUrl(urlPath, queryParams), this.lastRequest.options ?? {});
+        const result = await response.json();
         if (!response.ok) {
             this.handleResponseErrors(response, result);
         }
@@ -77,7 +101,7 @@ export default class RestApi {
                 // In case the remote api is type sensitive (like Firebase), convert to numbers and booleans from FormData strings 
                 let currValue: APIQueryValue = value as string;
                 if (!isNaN(Number(value))) {
-                    currValue = parseInt(value as string);
+                    currValue = Number(value as string);
                 }
                 else if ((value === "true") || (value === "false")) {
                     currValue = (value === "true");
@@ -101,27 +125,10 @@ export default class RestApi {
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Handle error responses from the API requests
-    private handleResponseErrors(response: Response, result: any): void {
-        if ((response.status == 400)) {
-            throw new ApiError(response.status, `Bad request: ${result.error ?? ""}  (${response.statusText})`);
-        }
-        // Server errors - show the error message from API
-        else if (response.status == 500) {
-            throw new ApiError(response.status, `Server error: ${result.error ?? ""}  (${response.statusText})`);
-        }
-        // Other errors - show request status message
-        else {
-            throw new ApiError(response.status, `API Error: ${response.statusText}`);
-        }
-    }
-
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////
     // Assemble URL to send requests to.
     private buildRequestUrl(urlPath: string = '', queryParams: APIQueryParams = null): URL {
         const url: URL = new URL(`${this.urlBase}${urlPath.length ? "/" + urlPath : ""}${this.urlSuffix}`);
-        if (queryParams) {
+        if (queryParams && (Object.keys(queryParams).length > 0)) {
             for (const key in queryParams) {
                 if (Array.isArray(queryParams[key])) {
                     for (const elem of queryParams[key]) {
@@ -133,8 +140,39 @@ export default class RestApi {
                 }
             }
         }
+        this.lastRequest.url = url;
         return url;
     }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Update and get last requested URL.
+    private rebuildRequestUrl(urlPath: string = '', queryParams: APIQueryParams = null): URL {
+        if (!this.lastRequest.url) {
+            this.lastRequest.url = this.buildRequestUrl(urlPath, queryParams);
+        }
+        else {
+            if (urlPath.length > 0) {
+                this.lastRequest.url.pathname = `/${urlPath}${this.urlSuffix}`;
+            }
+
+            if (queryParams && (Object.keys(queryParams).length > 0)) {
+                for (const key in queryParams) {
+                    if (Array.isArray(queryParams[key]) && (queryParams[key].length > 0)) {
+                        this.lastRequest.url.searchParams.set(key, queryParams[key][0]);
+                        for (let i = 1; i < queryParams[key].length; i++) {
+                            this.lastRequest.url.searchParams.append(key, queryParams[key][i]);
+                        }
+                    }
+                    else {
+                        this.lastRequest.url.searchParams.set(key, queryParams[key] as string);
+                    }
+                }
+            }
+        }
+        return this.lastRequest.url;
+    }
+
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
     // Build options object for fetch() for submitting JSON data.
@@ -144,7 +182,29 @@ export default class RestApi {
             headers: { "Content-Type": "application/json" },
             body: (formData instanceof FormData ? this.formdataToJson(formData) : JSON.stringify(formData)),
         };
+        this.lastRequest.options = options;
         return options;
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////////
+    // Handle error responses from the API requests
+    private handleResponseErrors(response: Response, result: any): void {
+        this.lastRequest.url = null;
+        this.lastRequest.method = "None";
+        this.lastRequest.options = undefined;
+
+        if ((response.status == 400)) {
+            throw new ApiError(response.status, `Bad request: ${result.error ?? ""}  (${response.statusText})`);
+        }
+        // Server errors - show the error message from API
+        else if (response.status == 500) {
+            throw new ApiError(response.status, `Server error: ${result.error ?? ""}  (${response.statusText})`);
+        }
+        // Other errors - show request status message
+        else {
+            throw new ApiError(response.status, `API Error: ${response.statusText}`);
+        }
     }
 }
 
