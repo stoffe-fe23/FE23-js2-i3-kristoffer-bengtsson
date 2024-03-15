@@ -3,7 +3,7 @@
     By Kristoffer Bengtsson
 
     RestApi.js
-    Class for making requests to a REST API using JSON data. 
+    Generic class for making requests to a REST API using JSON data. 
 */
 import { APIQueryParams, APIQueryValue, APIQueryData, APILastRequest } from './TypeDefinitions.ts';
 
@@ -98,7 +98,7 @@ export default class RestApi {
         var dataObject = {};
         if (formData instanceof FormData) {
             formData.forEach((value, key) => {
-                // In case the remote api is type sensitive (like Firebase), convert to numbers and booleans from FormData strings 
+                // In case the remote api is type sensitive (like Firebase), convert to numbers and booleans from the FormData strings 
                 let currValue: APIQueryValue = value as string;
                 if (!isNaN(Number(value))) {
                     currValue = Number(value as string);
@@ -146,7 +146,7 @@ export default class RestApi {
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Update and get last requested URL.
+    // Update and get last requested URL. 
     private rebuildRequestUrl(urlPath: string = '', queryParams: APIQueryParams = null): URL {
         if (!this.lastRequest.url) {
             this.lastRequest.url = this.buildRequestUrl(urlPath, queryParams);
@@ -156,10 +156,12 @@ export default class RestApi {
                 this.lastRequest.url.pathname = `/${urlPath}${this.urlSuffix}`;
             }
 
+            // Set additional query params, or override existing with same name. 
             if (queryParams && (Object.keys(queryParams).length > 0)) {
                 for (const key in queryParams) {
                     if (Array.isArray(queryParams[key]) && (queryParams[key].length > 0)) {
                         this.lastRequest.url.searchParams.set(key, queryParams[key][0]);
+
                         for (let i = 1; i < queryParams[key].length; i++) {
                             this.lastRequest.url.searchParams.append(key, queryParams[key][i]);
                         }

@@ -6,6 +6,7 @@
     My general utility functions module (trimmed down to only what is used here)
 */
 
+
 ///////////////////////////////////////////////////////////////////////////////
 // Create and return (or attach) a HTML element based on a template.
 //  - templateId is the ID of the <template> tag in the HTML file to use.
@@ -204,6 +205,7 @@ function createRatingScoreElement(currElement: number, maxElements: number, scor
 
     newSVG.classList.add("points");
     newUse.setAttribute("href", "#points-image");
+    newUse.setAttribute("xlink:href", "#points-image");
     newSVG.appendChild(newUse);
     return newSVG;
 }

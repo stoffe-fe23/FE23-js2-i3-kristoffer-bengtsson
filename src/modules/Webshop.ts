@@ -9,8 +9,6 @@ import RestApi from './RestApi.ts';
 import * as utilities from './utilities.ts';
 import { APIQueryParams, ProductsResult } from './TypeDefinitions.ts';
 
-// const shop = new Webshop('https://dummyjson.com');
-
 export default class Webshop {
     private api: RestApi;
     public readonly pageSize: number;
@@ -31,6 +29,7 @@ export default class Webshop {
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////
+    // Load categories from API as options of select element.
     public async loadCategories(catSelect: HTMLSelectElement): Promise<void> {
         if (catSelect) {
             const categories: string[] = await this.api.getJson("products/categories");
@@ -47,6 +46,7 @@ export default class Webshop {
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////
+    // Display all products matching the specified name filter, or all products if unspecified. 
     public async getProducts(nameFilter: string = '', resultPage: number = 0): Promise<ProductsResult> {
         const queryParams: APIQueryParams = {
             q: nameFilter,
@@ -63,6 +63,7 @@ export default class Webshop {
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////
+    // Display all products belonging to the specified category. 
     public async getProductsByCategory(categoryFilter: string = '', resultPage: number = 0): Promise<ProductsResult> {
         const queryParams: APIQueryParams = {
             limit: this.pageSize.toString(),
@@ -78,6 +79,7 @@ export default class Webshop {
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////
+    // Display the specified page of products results.
     public async getProductsPage(pageType: 'prev' | 'next' | 'first' | 'last' | 'page', pageNum: number = 0): Promise<ProductsResult> {
         let resultPage = Math.ceil(this.currentResult.skip / this.pageSize);
         const maxPage = Math.ceil(this.currentResult.total / this.pageSize);
@@ -105,6 +107,7 @@ export default class Webshop {
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////
+    // Display all the specified products on the page. 
     public displayProducts(productData: ProductsResult) {
         const productsBox = document.querySelector("#productlist") as HTMLElement;
         const summaryBox = document.querySelector("#search-summary") as HTMLDivElement;
@@ -121,11 +124,13 @@ export default class Webshop {
             if ((productData.total > 0) && (productData.products.length > 0)) {
                 for (const product of productData.products) {
                     const card = utilities.createHTMLFromTemplate("tpl-product-card", productsBox, product, { "data-productid": product.id.toString() });
+
+                    (card.querySelector(".rating") as HTMLElement).prepend(utilities.createRatingScoreDisplay(product.rating, 5));
                     card.addEventListener("click", this.onProductClick.bind(this));
-                    card.querySelector(".rating")!.prepend(utilities.createRatingScoreDisplay(product.rating, 5));
-                    card.querySelector("form")!.addEventListener("submit", this.onPurchaseSubmit.bind(this));
+                    (card.querySelector("form") as HTMLFormElement).addEventListener("submit", this.onPurchaseSubmit.bind(this));
+
                     if (product.stock < 10) {
-                        card.querySelector(".stock")!.classList.add("alert");
+                        (card.querySelector(".stock") as HTMLElement).classList.add("alert");
                     }
                 }
             }
@@ -137,6 +142,7 @@ export default class Webshop {
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////
+    // Show or hide the control for navigating product results if more exists than the per-page limit.
     public showResultNav(isMultiplePages: boolean): void {
         const pageNav = document.querySelector("#pages-nav") as HTMLFormElement;
         if (isMultiplePages) {

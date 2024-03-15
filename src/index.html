@@ -71,6 +71,18 @@
                     </form>
                 </article>
             </template>
+            <!-- Template for the rating stars image -->
+            <svg viewBox="0 0 18 18" id="points-template">
+                <defs>
+                    <mask id="halfscore">
+                        <rect x="0" y="0" width="18" height="18" fill="white" />
+                        <rect x="55%" y="0" width="18" height="18" fill="#535353" />
+                    </mask>
+                    <symbol id="points-image" viewBox="0 0 18 18">
+                        <polygon cx="0.3" cy="0.25" id="svg_2" orient="point" point="5" points="9.00238361954689,0.6689851880073547 10.837319761514664,7.508753776550293 17.90935555100441,7.14027738571167 11.971372991800308,10.999011039733887 14.507193952798843,17.611045837402344 9.00238361954689,13.156108856201172 3.497573286294937,17.611045837402344 6.033393293619156,10.999011039733887 0.09541362524032593,7.14027738571167 7.1674465239048,7.508753776550293 9.00238361954689,0.6689851880073547 10.837319761514664,7.508753776550293 " r="16.15" r2="5.38" radialshift="0" shape="star" starRadiusMultiplier="6" stroke-width="1" />
+                    </symbol>
+                </defs>
+            </svg>
         </main>
         <footer>
             <ul>
@@ -88,16 +100,4 @@
             <button id="pages-goto-submit">Go</button>
         </form>
     </dialog>
-    <!-- Template for the rating stars image -->
-    <svg viewBox="0 0 18 18" id="points-template">
-        <defs>
-            <mask id="halfscore">
-                <rect x="0" y="0" width="18" height="18" fill="white" />
-                <rect x="55%" y="0" width="18" height="18" fill="#535353" />
-            </mask>
-            <symbol id="points-image" viewBox="0 0 18 18">
-                <polygon cx="0.3" cy="0.25" id="svg_2" orient="point" point="5" points="9.00238361954689,0.6689851880073547 10.837319761514664,7.508753776550293 17.90935555100441,7.14027738571167 11.971372991800308,10.999011039733887 14.507193952798843,17.611045837402344 9.00238361954689,13.156108856201172 3.497573286294937,17.611045837402344 6.033393293619156,10.999011039733887 0.09541362524032593,7.14027738571167 7.1674465239048,7.508753776550293 9.00238361954689,0.6689851880073547 10.837319761514664,7.508753776550293 " r="16.15" r2="5.38" radialshift="0" shape="star" starRadiusMultiplier="6" stroke-width="1" />
-            </symbol>
-        </defs>
-    </svg>
 </html>
