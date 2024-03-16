@@ -13,8 +13,6 @@ export default class RestApi {
     private readonly urlSuffix: string;
     private lastRequest: APILastRequest;
 
-    // Set the base URL to access the api, and any default suffix (like ".json" on Firebase)
-    // Each individual request method can then extend on the base url, and add query parameters. 
     constructor(baseUrl: string, urlSuffix: string = "") {
         this.urlBase = baseUrl;
         this.urlSuffix = urlSuffix;
@@ -146,7 +144,7 @@ export default class RestApi {
 
 
     //////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Update and get last requested URL. 
+    // Get and update last requested URL. 
     private rebuildRequestUrl(urlPath: string = '', queryParams: APIQueryParams = null): URL {
         if (!this.lastRequest.url) {
             this.lastRequest.url = this.buildRequestUrl(urlPath, queryParams);

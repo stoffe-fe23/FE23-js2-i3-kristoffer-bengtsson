@@ -6,11 +6,14 @@
     Main class of the fake webshop. Fetch and display products. 
 */
 import RestApi from './RestApi.ts';
+import ShoppingCart from './ShoppingCart.ts';
 import * as utilities from './utilities.ts';
-import { APIQueryParams, ProductsResult } from './TypeDefinitions.ts';
+import { APIQueryParams, ProductsResult, Product } from './TypeDefinitions.ts';
+
 
 export default class Webshop {
     private api: RestApi;
+    public readonly cart: ShoppingCart;
     public readonly pageSize: number;
     public currentResult: ProductsResult;
     public onPurchaseSubmit: Function;
@@ -18,6 +21,7 @@ export default class Webshop {
 
     constructor(apiUrl: string, resultsPerPage: number = 20) {
         this.api = new RestApi(apiUrl);
+        this.cart = new ShoppingCart();
         this.pageSize = resultsPerPage;
         this.currentResult = {
             products: [],
@@ -27,9 +31,8 @@ export default class Webshop {
         };
     }
 
-
     //////////////////////////////////////////////////////////////////////////////////////////////
-    // Load categories from API as options of select element.
+    // Load categories from API as options of select form element.
     public async loadCategories(catSelect: HTMLSelectElement): Promise<void> {
         if (catSelect) {
             const categories: string[] = await this.api.getJson("products/categories");
@@ -124,13 +127,16 @@ export default class Webshop {
             if ((productData.total > 0) && (productData.products.length > 0)) {
                 for (const product of productData.products) {
                     const card = utilities.createHTMLFromTemplate("tpl-product-card", productsBox, product, { "data-productid": product.id.toString() });
-
-                    (card.querySelector(".rating") as HTMLElement).prepend(utilities.createRatingScoreDisplay(product.rating, 5));
                     card.addEventListener("click", this.onProductClick.bind(this));
+                    (card.querySelector(".rating") as HTMLElement).prepend(utilities.createRatingScoreDisplay(product.rating, 5));
                     (card.querySelector("form") as HTMLFormElement).addEventListener("submit", this.onPurchaseSubmit.bind(this));
 
                     if (product.stock < 10) {
                         (card.querySelector(".stock") as HTMLElement).classList.add("alert");
+                    }
+
+                    if (this.cart.isInCart(product.id)) {
+                        this.cart.showAddedIndicator(product.id, true);
                     }
                 }
             }
@@ -160,5 +166,12 @@ export default class Webshop {
         else {
             pageNav.classList.remove("show");
         }
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////
+    // Get information about a currently displayed product by its product ID. 
+    public findCurrentProductById(productId: number): Product | undefined {
+        return this.currentResult.products.find((product) => product.id == productId);
     }
 }

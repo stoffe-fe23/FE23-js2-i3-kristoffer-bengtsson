@@ -14,6 +14,8 @@
 //  - values is an object where the key is a classname and value is the value
 //    to set as innerText/HTML of the matching element within the new object
 //    (or href for links, src for images, value for form fields)
+//  - attributes is an object where the key is the name of existing attributes
+//    on tags in the template to set the value of. 
 export function createHTMLFromTemplate(templateId: string, container: HTMLElement | null = null, values: Record<string, string | number | boolean> = {}, attributes: Record<string, string> | null = null, allowHTML: boolean = false): HTMLElement {
     let newElement: HTMLElement;
     const template = document.getElementById(templateId) as HTMLTemplateElement;
@@ -22,27 +24,31 @@ export function createHTMLFromTemplate(templateId: string, container: HTMLElemen
         newElement = template.content.firstElementChild!.cloneNode(true) as HTMLElement;
 
         for (const key in values) {
-            const targetElement = newElement.querySelector(`.${key}`);
-            if (targetElement) {
-                switch (targetElement.tagName) {
-                    case "IMG": (targetElement as HTMLImageElement).src = values[key] as string; break;
-                    case "A": (targetElement as HTMLAnchorElement).href = values[key] as string; break;
-                    case "TEXTAREA":
-                    case "SELECT":
-                    case "INPUT": (targetElement as HTMLInputElement).value = values[key] as string; break;
-                    default: targetElement[allowHTML ? "innerHTML" : "innerText"] = values[key] as string; break;
+            const targetElements = newElement.querySelectorAll(`.${key}`);
+            targetElements.forEach((targetElement) => {
+                if (targetElement) {
+                    switch (targetElement.tagName) {
+                        case "IMG": (targetElement as HTMLImageElement).src = values[key] as string; break;
+                        case "A": (targetElement as HTMLAnchorElement).href = values[key] as string; break;
+                        case "TEXTAREA":
+                        case "SELECT":
+                        case "INPUT": (targetElement as HTMLInputElement).value = values[key] as string; break;
+                        default: targetElement[allowHTML ? "innerHTML" : "innerText"] = values[key] as string; break;
+                    }
                 }
-            }
+            });
         }
 
         if (attributes) {
             for (const key in attributes) {
-                const attr = newElement.querySelector(`[${key}]`);
                 if (newElement.getAttribute(key)) {
                     newElement.setAttribute(key, attributes[key]);
                 }
-                else if (attr) {
-                    attr.setAttribute(key, attributes[key]);
+                else {
+                    const attributes = newElement.querySelectorAll(`[${key}]`);
+                    attributes.forEach((attr) => {
+                        attr.setAttribute(key, attributes[key]);
+                    });
                 }
             }
         }
@@ -60,7 +66,7 @@ export function createHTMLFromTemplate(templateId: string, container: HTMLElemen
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-// Oneliner to create and return a new DOM element with content, optionally appending it to a parent element.
+// Oneliner to create and return a new HTML DOM element with content, optionally appending it to a parent element.
 //  * elementText can either be a string holding the content of the tag or the ALT of an img tag, or an array of strings 
 //    containing the listitems/options for UL, OL, SELECT and DATALIST tags. In the case of SELECT/DATALIST the strings 
 //    can also be formated like: SELECT: value|textlabel|optgroup      DATALIST: value|textlabel
@@ -170,6 +176,8 @@ export function addClassToElement(targetElement: HTMLElement, classesToAdd: stri
 }
 
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+// Add an option to the specified select element. 
 export function addSelectOption(selectElement: HTMLSelectElement, value: string, text: string | null = null): void {
     const option = document.createElement("option");
     option.value = value;
@@ -179,7 +187,7 @@ export function addSelectOption(selectElement: HTMLSelectElement, value: string,
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////
-// Build a rating display with stars from a rating value
+// Build a rating display with stars from a rating value. Uses an inline SVG image in the HTML file.
 export function createRatingScoreDisplay(score: number, scoreMax: number): HTMLElement {
     const scoreBox = document.createElement("div");
     const scoreValueBox = document.createElement("span");

@@ -1,0 +1,142 @@
+/*
+    Dummy Webshop - Inlämningsuppgift 3 - Javascript 2 - FE23
+    By Kristoffer Bengtsson
+
+    cart.css
+    Styling for the shopping cart. 
+*/
+#cart-products {
+    min-width: 500px;
+}
+
+#cart-products h2 {
+    text-align: center;
+    margin: 0;
+}
+
+
+#cart-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-top: 1rem;
+}
+
+#cart-price-sum {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 1rem;
+    font-weight: 700;
+}
+
+.product-row,
+#cart-heading {
+    display: grid;
+    grid-template-columns: 6fr 2fr 1fr;
+    justify-content: start;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+#cart-heading {
+    font-weight: 700;
+}
+
+.product-row {
+    margin: 0.2rem 0;
+    font-size: 0.9em;
+}
+
+#cart-heading > div {
+    border-bottom: 1px solid blue;
+    color: black;
+    padding: 0.2rem;
+}
+
+
+.product-row .price::before {
+    content: '$';
+}
+
+.product-row .qty {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0;
+}
+
+.product-row .quantity {
+    width: 65px;
+    background-color: black;
+    color: white;
+    font-weight: 700;
+    border: 0;
+    border-radius: 15px 0px 0px 15px;
+    padding: 0.2rem 0.6rem;
+    outline: 0;
+}
+
+.product-row .qty button {
+    background-color: orange;
+    border: 0px;
+    padding: 0.2rem 0.5rem;
+    border-radius: 0px 15px 15px 0px;
+    cursor: pointer;
+}
+
+.product-row .qty button:focus,
+.product-row .qty button:hover {
+    background-color: yellow;
+    box-shadow: 0px 0px 15px yellow, 0px 0px 30px orange;
+    outline: 0;
+}
+
+#show-cart {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0px;
+    background-color: transparent;
+    cursor: pointer;
+    outline: 0;
+}
+
+#cart-icon {
+    fill: #ffffff;
+}
+
+#show-cart:focus #cart-icon,
+#show-cart:hover #cart-icon {
+    fill: yellow;
+}
+
+#show-cart-count {
+    color: white;
+    margin-left: 0.2rem;
+}
+
+#show-cart:focus #show-cart-count,
+#show-cart:hover #show-cart-count {
+    color: yellow;
+}
+
+#cart-checkout,
+#cart-close {
+    padding: 0.4rem 0.8rem;
+    border: 0;
+    background-color: black;
+    color: white;
+    border-radius: 15px;
+    font-size: 1em;
+    cursor: pointer;
+}
+
+#cart-checkout:hover,
+#cart-close:hover {
+    background-color: orange;
+    color: black;
+}
+
+#cart-checkout:focus,
+#cart-close:focus {
+    outline: 3px solid orange;
+}

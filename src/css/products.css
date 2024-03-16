@@ -1,0 +1,184 @@
+/*
+    Dummy Webshop - Inlämningsuppgift 3 - Javascript 2 - FE23
+    By Kristoffer Bengtsson
+
+    products.css
+    Styling for a product card element. 
+*/
+#productlist article {
+    background-color: lightgray;
+    box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.15);
+    max-width: 300px;
+    font-size: 0.9em;
+    display: grid;
+    grid-template-areas: "category" "image" "info" "buyform";
+    grid-template-rows: auto auto 1fr auto;
+    flex-direction: column;
+    justify-content: space-between;
+    overflow: hidden;
+}
+
+#productlist article .category {
+    grid-area: category;
+    background-color: black;
+    color: white;
+    text-align: center;
+    font-weight: 700;
+    font-size: 0.9em;
+    text-transform: uppercase;
+}
+
+#productlist article .image-wrapper {
+    grid-area: image;
+    background-color: rgb(133, 133, 133);
+    color: white;
+    height: 300px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+#productlist article img {
+    max-width: 100%;
+    display: block;
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+#productlist article .info-wrapper {
+    grid-area: info;
+    padding: 1.2rem;
+}
+
+#productlist article .info-wrapper > div {
+    text-align: center;
+}
+
+#productlist article h3 {
+    margin: 0;
+    text-align: center;
+}
+
+#productlist article .brand {
+    text-align: center;
+    font-style: italic;
+    margin-bottom: 1rem;
+}
+
+#productlist article .rating {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.9em;
+}
+
+#productlist article .info-wrapper .description {
+    margin: 1.2rem 0;
+    text-align: left;
+}
+
+#productlist article .stock.alert {
+    color: darkred;
+
+}
+
+#productlist article .stock.alert::after {
+    content: "nearly sold out!";
+    background-color: darkred;
+    color: white;
+    padding: 0 0.4rem 0.2rem 0.4rem;
+    margin-left: 0.5rem;
+    border-radius: 10px;
+}
+
+#productlist article .price {
+    font-size: 2.5em;
+    text-align: right;
+}
+
+#productlist article .price::before {
+    content: "$";
+}
+
+#productlist article .discountPercentage {
+    text-align: right;
+}
+
+#productlist article .discountPercentage::after {
+    content: "% off!";
+}
+
+
+/**** Rating score stars ****/
+
+#points-template {
+    width: 0px;
+    height: 0px;
+}
+
+.points {
+    width: 20px;
+    height: 20px;
+
+}
+
+.points:not(.scored) {
+    fill: transparent;
+    stroke: darkgray;
+}
+
+.points.scored {
+    opacity: 1;
+    fill: blueviolet;
+}
+
+/**** Buy this product form ****/
+
+form.buy-product {
+    grid-area: buyform;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    margin-top: 1rem;
+}
+
+form.buy-product button {
+    border: 0px;
+    color: black;
+    background-color: rgb(117, 149, 209);
+    border-radius: 0px 15px 0px 0px;
+    padding: 0.5rem;
+    cursor: pointer;
+    outline: 0;
+}
+
+form.buy-product.bought::before {
+    display: block;
+    content: 'Added to shopping cart';
+    position: absolute;
+    background-color: darkgreen;
+    color: white;
+    padding: 0.1rem 0.6rem;
+    font-size: 0.8em;
+    top: -1.5rem;
+    border-radius: 15px;
+}
+
+form.buy-product button:focus,
+form.buy-product button:active,
+form.buy-product button:hover {
+    background-color: orange;
+    box-shadow: 0 0 10px orange;
+}
+
+form.buy-product input {
+    border: 0px;
+    background-color: black;
+    color: white;
+    padding: 0.5rem 0.7rem;
+    border-radius: 15px 0px 0px 0px;
+    outline: 0;
+}

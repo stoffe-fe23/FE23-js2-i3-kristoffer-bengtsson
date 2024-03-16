@@ -1,3 +1,10 @@
+/*
+    Dummy Webshop - Inlämningsuppgift 3 - Javascript 2 - FE23
+    By Kristoffer Bengtsson
+
+    resultnav.css
+    Styling for the controls to navigate product result pages.
+*/
 #pages-nav {
     display: none;
     background-color: rgb(40, 40, 40);

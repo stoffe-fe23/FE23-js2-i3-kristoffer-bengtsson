@@ -1,3 +1,10 @@
+/*
+    Dummy Webshop - Inlämningsuppgift 3 - Javascript 2 - FE23
+    By Kristoffer Bengtsson
+
+    search.css
+    Styling for the product search and category filter forms.
+*/
 #productfilters {
     display: flex;
     justify-content: center;
@@ -51,6 +58,8 @@
     outline: 0;
 }
 
+#categoryform button:focus,
+#categoryform button:not(:disabled):hover,
 #searchform button:focus,
 #searchform button:not(:disabled):hover {
     background-color: yellow;

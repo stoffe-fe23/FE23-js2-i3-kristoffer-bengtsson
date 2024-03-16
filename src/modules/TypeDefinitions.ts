@@ -3,10 +3,10 @@
     By Kristoffer Bengtsson
 
     TypeDefinitions.js
-    Type aliases.
+    Type alias definitions.
 */
 
-// Structure of a product object
+// Product object
 export type Product = {
     id: number,
     title: string,
@@ -20,7 +20,7 @@ export type Product = {
     thumbnail: string
 }
 
-// Structure of response data received from API when requesting a product list
+// Response data received from API when requesting a product list
 export type ProductsResult = {
     products: Product[],
     total: number,
@@ -28,14 +28,22 @@ export type ProductsResult = {
     limit: number
 }
 
-// Structure of parameters when doing an API request
+// Product in the shopping cart
+export type CartProduct = {
+    id: number,
+    name: string,
+    quantity: number,
+    price: number
+}
+
+// Parameters when doing an API request
 export type APIQueryParams = Record<string, string | Array<string>> | null;
 
-// Structure of data passed to the API functions when doing a non-GET request
+// Data passed to the API functions when doing a non-GET request
 export type APIQueryValue = string | number | boolean | Array<string | number>;
 export type APIQueryData = FormData | Record<string, APIQueryValue> | null;
 
-// Structure for tracking info about the last API query performed
+// Tracking info about the last API query performed
 export type APILastRequest = {
     url: URL | null,
     method: 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'None',
