@@ -36,6 +36,10 @@ header {
     z-index: 1;
 }
 
+header h1 {
+    margin: 0;
+}
+
 main {
     grid-area: main;
     padding: 1rem;
