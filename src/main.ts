@@ -88,8 +88,8 @@ function onResultPageNav(event) {
         case "pages-nav-last": shop.getProductsPage('last').catch(alert); break;
         case "pages-nav-goto": // Show popup dialog for navigating to specific product page
             const pageInput = document.querySelector("#pages-goto-page") as HTMLInputElement;
-            pageInput.setAttribute("max", Math.ceil(shop.currentResult.total / shop.pageSize).toString());
-            pageInput.value = Math.ceil((shop.currentResult.skip / shop.pageSize) + 1).toString();
+            pageInput.setAttribute("max", shop.resultPages.toString());
+            pageInput.value = shop.currentPage.toString();
             pageInput.select();
             (document.querySelector("#pages-goto-dialog") as HTMLDialogElement).showModal();
             break;
@@ -105,7 +105,7 @@ function onGotoPageSubmit(event) {
     const dialog = event.currentTarget.closest("dialog");
     const pageInput: number = Number((document.querySelector("#pages-goto-page") as HTMLInputElement).value);
 
-    if (!isNaN(pageInput) && (pageInput > 0) && (pageInput <= Math.ceil(shop.currentResult.total / shop.pageSize))) {
+    if (!isNaN(pageInput) && (pageInput > 0) && (pageInput <= shop.resultPages)) {
         shop.getProductsPage('page', pageInput).catch(alert);
     }
     if (dialog) {

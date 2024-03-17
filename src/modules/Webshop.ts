@@ -13,9 +13,9 @@ import { APIQueryParams, ProductsResult, Product } from './TypeDefinitions.ts';
 
 export default class Webshop {
     private api: RestApi;
+    private currentResult: ProductsResult;
     public readonly cart: ShoppingCart;
     public readonly pageSize: number;
-    public currentResult: ProductsResult;
     public onPurchaseSubmit: Function;
     public onProductClick: Function;
 
@@ -29,6 +29,16 @@ export default class Webshop {
             skip: 0,
             limit: 0
         };
+    }
+
+    // Get the total number of result pages of the current product result.
+    public get resultPages(): number {
+        return Math.ceil(this.currentResult.total / this.pageSize);
+    }
+
+    // Get the currently shown page of the current product result.
+    public get currentPage(): number {
+        return Math.ceil((this.currentResult.skip / this.pageSize) + 1);
     }
 
     //////////////////////////////////////////////////////////////////////////////////////////////
