@@ -121,14 +121,14 @@ export default class Webshop {
 
     //////////////////////////////////////////////////////////////////////////////////////////////
     // Display all the specified products on the page. 
-    public displayProducts(productData: ProductsResult) {
+    public displayProducts(productData: ProductsResult): void {
         const productsBox = document.querySelector("#productlist") as HTMLElement;
         const summaryBox = document.querySelector("#search-summary") as HTMLDivElement;
 
         if (summaryBox) {
             summaryBox.innerText = `Found ${productData.total} product${productData.total != 1 ? "s" : ""}.`;
             if (productData.total > productData.products.length) {
-                const bounds = (this.currentResult.skip + this.pageSize > productData.total ? productData.total : this.currentResult.skip + this.pageSize);
+                const bounds: number = (this.currentResult.skip + this.pageSize > productData.total ? productData.total : this.currentResult.skip + this.pageSize);
                 summaryBox.innerText += ` Showing ${this.currentResult.skip + 1} to ${bounds}`;
             }
         }
